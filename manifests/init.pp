@@ -15,4 +15,11 @@ class jenkins {
         path    => $execpath,
         notify  => Class['tomcat7']
     }
+
+    file {'jenkins-home':
+        path => '/usr/local/jenkins',
+        ensure => directory,
+        owner => 'www',
+        group => 'www',
+    }
 }
