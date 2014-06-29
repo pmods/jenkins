@@ -12,6 +12,6 @@ class jenkins {
         user    => 'www',
         group   => 'www',
         cwd     => "$webapps_dir",
-        notifiy => Class['tomcat7']
+        notify  => Class['tomcat7']
     }
 }
