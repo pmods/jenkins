@@ -12,7 +12,7 @@ class jenkins {
         user    => 'www',
         group   => 'www',
         cwd     => "$webapps_dir",
-        path    => $execpath
+        path    => $execpath,
         notify  => Class['tomcat7']
     }
 }
