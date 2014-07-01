@@ -26,7 +26,7 @@ class jenkins {
     }
 
     exec { 'jenkins-home-rc':
-        command => "echo tomcat7_java_opts=\"-DJENKINS_HOME=$jenkins_home/\" >> /etc/rc.conf"
+        command => "echo tomcat7_java_opts=\"-DJENKINS_HOME=$jenkins_home/\" >> /etc/rc.conf",
         user    => 'root',
         group   => 'root',
         path    => $execpath,
