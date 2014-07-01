@@ -19,7 +19,7 @@ class jenkins {
     }
 
     file {'jenkins-home':
-        path   => $jenkins_home
+        path   => $jenkins_home,
         ensure => directory,
         owner  => 'www',
         group  => 'www',
