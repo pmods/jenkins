@@ -6,6 +6,8 @@ class jenkins {
     $webapps_dir = '/usr/local/apache-tomcat-7.0/webapps'
     $execpath    = '/bin:/sbin:/usr/bin:/usr/sbin'
 
+    $jenkins_home = '/usr/local/jenkins'
+
     exec { 'jenkins-fetch':
         command => "fetch $jenkins_url",
         creates => "$webapps_dir/jenkins.war",
@@ -17,9 +19,19 @@ class jenkins {
     }
 
     file {'jenkins-home':
-        path => '/usr/local/jenkins',
+        path   => $jenkins_home
         ensure => directory,
-        owner => 'www',
-        group => 'www',
+        owner  => 'www',
+        group  => 'www',
+    }
+
+    exec { 'jenkins-home-rc':
+        command => "echo tomcat7_java_opts=\"-DJENKINS_HOME=$jenkins_home/\" >> /etc/rc.conf"
+        user    => 'root',
+        group   => 'root',
+        path    => $execpath,
+        unless  => "grep tomcat7_java_opts /etc/rc.conf",
+        require => File['jenkins-home'],
+        notify  => Class['tomcat7']
     }
 }
