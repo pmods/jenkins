@@ -1,4 +1,5 @@
 include tomcat7
+include javadev
 
 class jenkins {
 
