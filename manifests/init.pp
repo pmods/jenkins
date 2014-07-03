@@ -15,7 +15,8 @@ class jenkins {
         group   => 'www',
         cwd     => "$webapps_dir",
         path    => $execpath,
-        notify  => Class['tomcat7']
+        require => Package['tomcat7'],
+        notify  => Service['tomcat7']
     }
 
     file {'jenkins-home':
@@ -26,12 +27,10 @@ class jenkins {
     }
 
     exec { 'jenkins-home-rc':
-        command => "echo tomcat7_java_opts=\"-DJENKINS_HOME=$jenkins_home/\" >> /etc/rc.conf",
+        command => "/bin/echo tomcat7_java_opts=\"-DJENKINS_HOME=$jenkins_home/\" >> /etc/rc.conf",
         user    => 'root',
-        group   => 'root',
-        path    => $execpath,
-        unless  => "grep tomcat7_java_opts /etc/rc.conf",
+        unless  => "/usr/bin/grep tomcat7_java_opts /etc/rc.conf",
         require => File['jenkins-home'],
-        notify  => Class['tomcat7']
+        notify  => Service['tomcat7']
     }
 }
