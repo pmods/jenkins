@@ -1,30 +1,46 @@
-include tomcat7
-include javadev
 
-class jenkins {
+class jenkins (
+    $jenk_nconf_src = '/root/etc/jenkins/jenkins.server'
+){
+
+    include tomcat7
+    include javadev
+    include nginx
 
     $jenkins_url = 'http://mirrors.jenkins-ci.org/war/latest/jenkins.war'
-    $webapps_dir = '/usr/local/apache-tomcat-7.0/webapps'
+    $webapps_dir = '/usr/local/apache-tomcat-7.0/jenkins'
     $execpath    = '/bin:/sbin:/usr/bin:/usr/sbin'
 
     $jenkins_home = '/usr/local/jenkins'
 
+    $nconfdir = $nginx::nginxconfdir
+
     exec { 'jenkins-fetch':
-        command => "fetch $jenkins_url",
-        creates => "$webapps_dir/jenkins.war",
+        command => "fetch -o $webapps_dir/ROOT.war $jenkins_url",
+        creates => "$webapps_dir/ROOT.war",
         user    => 'www',
         group   => 'www',
         cwd     => "$webapps_dir",
         path    => $execpath,
-        require => Package['tomcat7'],
+        require => File['jenkappdir'],
         notify  => Service['tomcat7']
     }
 
-    file {'jenkins-home':
+    file { 'jenkins-home':
         path   => $jenkins_home,
         ensure => directory,
         owner  => 'www',
         group  => 'www',
+    }
+
+    file { 'jenkins-nginxcfg':
+        path    => "$nconfdir/jenkins.server",
+        ensure  => file,
+        owner   => 'root',
+        group   => 'wheel',
+        source  => $jenk_nconf_src,
+        require => File['nginx-confd'],
+        notify  => Service['nginx']
     }
 
     exec { 'jenkins-home-rc':

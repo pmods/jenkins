@@ -6,3 +6,6 @@ mod "pmods/tomcat7",
 mod "pmods/javadev",
     :git => "git@github.com:pmods/javadev.git"
 
+mod "pmods/nginx",
+    :git => "git@github.com:pmods/nginx.git"
+
